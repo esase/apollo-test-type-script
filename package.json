@@ -1,0 +1,26 @@
+{
+  "name": "apollo-server-demo",
+  "private": true,
+  "scripts": {
+    "build-prod": "webpack --config webpack.production.js",
+    "build-dev": "webpack --config webpack.development.js",
+    "start": "node dist/server"
+  },
+  "devDependencies": {
+    "@types/webpack-env": "^1.14.1",
+    "clean-webpack-plugin": "^3.0.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-merge": "^4.2.2",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "apollo-server": "^2.10.0",
+    "graphql": "^14.6.0",
+    "graphql-depth-limit": "^1.1.0",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.9.0"
+  }
+}
