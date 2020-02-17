@@ -15,6 +15,7 @@ mongoose.connection.once('open', () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    debug: true,
     introspection: true,
     playground: true,
     validationRules: [depthLimit(3)], // the maximum level of nested nodes

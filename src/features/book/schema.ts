@@ -23,7 +23,7 @@ export const typeDef = gql`
 export const resolvers = {
     Query: {
         books: async () => await BookModel.find({}).exec(),
-        book:  async(parent, { id }) => await BookModel.findById(id).exec()
+        book:  async(_, { id }) => await BookModel.findById(id).exec()
     },
     Mutation: {
       addBook: async (_, args) => {

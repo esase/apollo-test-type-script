@@ -16,6 +16,14 @@ import {
   resolvers as authorResolvers
 } from './features/author/schema';
 
+const file = `
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
+`;
+
 const query = `
   type Query {
     _empty: String
@@ -29,6 +37,7 @@ const mutation = `
 `;
 
 export const typeDefs = [
+  file,
   query,
   mutation,
   base,
