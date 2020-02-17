@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server-express';
+import { UserInputError, gql } from 'apollo-server';
 import BookModel, { IBook } from './mongo';
 import AuthorModel from '../author/mongo';
 
@@ -30,7 +30,9 @@ export const resolvers = {
         const author = await AuthorModel.findById(args.authorId).exec();
 
         if (!author) {
-          throw Error('Author not found');
+          throw new UserInputError('Author id is invalid or not existing', {
+            invalidArgs: Object.keys(args),
+          });
         }
 
         return await BookModel.create(args);
