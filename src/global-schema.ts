@@ -11,10 +11,14 @@ import {
   resolvers as bookResolvers
 } from './features/book/schema';
 
+import bookService from './features/book/service';
+
 import { 
   typeDef as author, 
   resolvers as authorResolvers
 } from './features/author/schema';
+
+import authorService from './features/author/service';
 
 const file = `
   type File {
@@ -46,8 +50,13 @@ export const typeDefs = [
 ];
 
 export const resolvers = merge(
-    {}, 
-    baseResolvers,
-    bookResolvers,
-    authorResolvers
+  {}, 
+  baseResolvers,
+  bookResolvers,
+  authorResolvers
 );
+
+export const services = [
+  bookService,
+  authorService
+];

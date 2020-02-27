@@ -1,6 +1,5 @@
 import { gql } from 'apollo-server';
-import AuthorModel, { IAuthor } from './mongo';
-import BookModel from '../book/mongo';
+import { IAuthor } from './mongo';
 
 export const typeDef = gql`
   extend type Query {
@@ -22,27 +21,15 @@ export const typeDef = gql`
 
 export const resolvers = {
     Query: {
-      authors: async () => await AuthorModel.find({}).exec(),
-      author:  async(parent, { id }) => await AuthorModel.findById(id).exec(),
+      authors: async (_, args, context) => await context.services.author.findAllAuthors(),
+      author:  async(parent, { id }, context) => await context.services.author.findAuthor(id),
     },
     Mutation: {
-      addAuthor: async (_, args) => await AuthorModel.create(args),
-      deleteAuthor: async(_, args) =>  {
-        const author = await AuthorModel.findById(args.id).exec();
-
-        if (author) {
-          await AuthorModel.findByIdAndDelete(args.id).exec();
-
-          return true;
-        }
-
-        return false;
-      }
+      addAuthor: async (_, args, context) => await context.services.author.createAuthor(args),
+      deleteAuthor: async(_, { id }, context) => await context.services.author.deleteAuthor(id)
     },
     Author: {
       // try to resolve an author's list of books
-      books: async(obj: IAuthor) => await BookModel.find({
-        authorId: obj.id
-      }).exec()
+      books: async(obj: IAuthor, _, context) => await context.services.book.findAllBooks(obj.id)
     }
 };

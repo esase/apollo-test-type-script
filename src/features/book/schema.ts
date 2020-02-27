@@ -1,6 +1,5 @@
 import { UserInputError, gql } from 'apollo-server';
-import BookModel, { IBook } from './mongo';
-import AuthorModel from '../author/mongo';
+import { IBook } from './mongo';
 
 export const typeDef = gql`
   extend type Query {
@@ -22,12 +21,12 @@ export const typeDef = gql`
 
 export const resolvers = {
     Query: {
-        books: async () => await BookModel.find({}).exec(),
-        book:  async(_, { id }) => await BookModel.findById(id).exec()
+        books: async (_, args, context) => await context.services.book.findAllBooks(),
+        book:  async(_, { id }, context) => await context.services.book.findBook(id)
     },
     Mutation: {
-      addBook: async (_, args) => {
-        const author = await AuthorModel.findById(args.authorId).exec();
+      addBook: async (_, args, context) => {
+        const author = await context.services.author.findAuthor(args.authorId);
 
         if (!author) {
           throw new UserInputError('Author id is invalid or not existing', {
@@ -35,22 +34,14 @@ export const resolvers = {
           });
         }
 
-        return await BookModel.create(args);
+        return await context.services.book.createBook(args);
       },
-      deleteBook: async(_, { id }) =>  {
-        const book = await BookModel.findById(id).exec();
-
-        if (book) {
-          await BookModel.findByIdAndDelete(id).exec();
-
-          return true;
-        }
-
-        return false;
+      deleteBook: async(_, { id }, context) =>  {
+        return await context.services.book.deleteBook(id);
       }
     },
     Book: {
       // try to resolve a book's author
-      author: async(obj: IBook) => await AuthorModel.findById(obj.authorId).exec()
+      author: async(obj: IBook, _, context) => await context.services.author.findAuthor(obj.authorId)
   }
 };

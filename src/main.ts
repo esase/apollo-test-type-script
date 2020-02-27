@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server';
-import { typeDefs, resolvers } from './global-schema';
+import { typeDefs, resolvers, services } from './global-schema';
 import responseCachePlugin from 'apollo-server-plugin-response-cache';
 import depthLimit from 'graphql-depth-limit';
 import mongoose from 'mongoose';
@@ -23,7 +23,17 @@ mongoose.connection.once('open', () => {
       defaultMaxAge: 5,
     },
     plugins: [responseCachePlugin()],
-    validationRules: [depthLimit(3)], // the maximum level of nested nodes
+    validationRules: [depthLimit(3)], // the maximum level of nested nodes,
+    context: ({ req }) => {
+      // init services
+      let serviceList = {};
+      services.forEach(service => {
+        serviceList[service.name] = service.factory(1)
+      });
+      return {
+        services: serviceList
+      };
+    }
   });
 
   server.listen()
