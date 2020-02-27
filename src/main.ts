@@ -1,7 +1,8 @@
 import { ApolloServer } from 'apollo-server';
 import { typeDefs, resolvers } from './global-schema';
-import * as depthLimit from 'graphql-depth-limit';
-import * as mongoose from 'mongoose';
+import responseCachePlugin from 'apollo-server-plugin-response-cache';
+import depthLimit from 'graphql-depth-limit';
+import mongoose from 'mongoose';
 
 // connect to mongo
 mongoose.connect('mongodb://localhost:27017/admin', { 
@@ -18,6 +19,10 @@ mongoose.connection.once('open', () => {
     debug: true,
     introspection: true,
     playground: true,
+    cacheControl: {
+      defaultMaxAge: 5,
+    },
+    plugins: [responseCachePlugin()],
     validationRules: [depthLimit(3)], // the maximum level of nested nodes
   });
 
