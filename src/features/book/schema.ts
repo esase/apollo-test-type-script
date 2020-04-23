@@ -15,7 +15,7 @@ export const typeDef = gql`
   type Book implements Node @cacheControl(maxAge: 120) {
     id: ID!
     title: String!
-    author: Author!
+    author: Author
   }
 `;
 
